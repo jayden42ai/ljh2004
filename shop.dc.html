@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="styles.css">
+<script src="ds-bundle.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<style>
+html { overflow-x: clip; }
+body { margin: 0; background: var(--color-bg); color: var(--color-text); font-family: 'Figtree', 'Gowun Dodum', sans-serif; text-wrap: pretty; overflow-x: clip; word-break: keep-all; }
+.btn, .nav a { white-space: nowrap; }
+a { color: var(--color-accent-700); text-decoration: none; }
+a:hover { color: var(--color-accent-800); text-decoration: underline; }
+h1, h2, h3 { font-family: 'Caprasimo', 'Jua', sans-serif; font-weight: 400; margin: 0; }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; display: flex; flex-direction: column; position: relative; isolation: isolate; overflow-x: clip;">
+  <div aria-hidden="true" style="position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;">
+    <div style="position: absolute; left: -12vw; top: 18vh; width: 46vw; height: 46vw; max-width: 620px; max-height: 620px; background: var(--color-accent-2-200); border-radius: 62% 38% 55% 45% / 48% 60% 40% 52%; filter: blur(40px); opacity: 0.55;"></div>
+    <div style="position: absolute; right: -10vw; top: 52vh; width: 40vw; height: 40vw; max-width: 560px; max-height: 560px; background: var(--color-accent-200); border-radius: 45% 55% 38% 62% / 55% 42% 58% 45%; filter: blur(48px); opacity: 0.45;"></div>
+    <div style="position: absolute; left: 38vw; bottom: -18vh; width: 36vw; height: 36vw; max-width: 500px; max-height: 500px; background: var(--color-accent-2-300); border-radius: 58% 42% 50% 50% / 40% 55% 45% 60%; filter: blur(56px); opacity: 0.35;"></div>
+  </div>
+
+  <sc-if value="{{ launchSale }}" hint-placeholder-val="{{ true }}">
+    <div style="background: var(--color-accent-2-700); color: var(--color-bg); text-align: center; font-size: 14px; padding: 9px 20px; font-weight: 600;">출시 기념 10% 할인 · 7만원 이상 무료배송</div>
+  </sc-if>
+
+  <nav class="nav" style="position: sticky; top: 0; z-index: 20; background: var(--color-bg); padding-inline: max(20px, calc((100% - 1200px) / 2 + 40px)); display: flex; align-items: center; gap: var(--space-6); flex-wrap: wrap;">
+    <span class="nav-brand" onClick="{{ goHome }}" style="cursor: pointer; letter-spacing: 0.08em;">NATURE MIST</span>
+    <div style="display: flex; gap: var(--space-6); flex: 1; flex-wrap: wrap;">
+      <a href="#products" onClick="{{ toProducts }}">제품</a>
+      <a href="#features" onClick="{{ toFeatures }}">기능</a>
+      <a href="#how" onClick="{{ toHow }}">작동 방식</a>
+      <a href="#mood" onClick="{{ toMood }}">무드 추천</a>
+    </div>
+    <button type="button" class="btn btn-secondary" onClick="{{ openCart }}" style="display: flex; align-items: center; gap: 8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+      장바구니
+      <span style="min-width: 22px; height: 22px; border-radius: 999px; background: var(--color-accent); color: #fff; font-size: 12px; display: grid; place-items: center; padding: 0 6px; box-sizing: border-box;">{{ cartCount }}</span>
+    </button>
+  </nav>
+
+  <main style="flex: 1;">
+
+  <!-- HOME -->
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 40px);">
+
+      <section data-screen-label="Home hero" style="position: relative; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: clamp(32px, 5vw, 72px); align-items: center; padding: clamp(48px, 8vw, 96px) 0 clamp(48px, 6vw, 80px);">
+        <div style="position: absolute; right: -160px; top: -200px; width: 420px; height: 420px; border-radius: 50%; background: var(--color-accent-2-200); z-index: -1;"></div>
+        <div>
+          <span style="display: block; font-size: 13px; letter-spacing: 0.06em; font-weight: 600; color: var(--color-accent-700); margin-bottom: 20px;">자연의 변화를 담은 감성 가습기</span>
+          <h1 style="font-size: clamp(40px, 5.4vw, 68px); line-height: 1.12;">
+            <span style="display: block;">습도에 따라</span>
+            <span style="display: block;">다르게 피어나는</span>
+            <span style="display: block;">자연의 아름다움</span>
+          </h1>
+          <p style="font-size: 17px; line-height: 1.7; max-width: 46ch; margin: 24px 0 0; color: color-mix(in srgb, var(--color-text) 80%, transparent);">건조할 때는 화산처럼 붉게 타오르고, 꽃봉오리를 닫습니다. 촉촉해지면 백두산처럼 푸르게, 꽃처럼 활짝 피어납니다. 방 안의 습도를 눈으로 보는 가습기, NATURE MIST.</p>
+          <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: 32px;">
+            <button type="button" class="btn btn-primary" onClick="{{ toProducts }}">제품 보러가기</button>
+            <button type="button" class="btn btn-ghost" onClick="{{ toMood }}">나에게 맞는 가습기 찾기</button>
+          </div>
+        </div>
+        <figure class="washed" style="margin: 0; border-radius: calc(2 * var(--radius-lg)); overflow: hidden; aspect-ratio: 420 / 235;">
+          <img src="hero.png" alt="호숫가에 놓인 화산 가습기와 선인장 가습기" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        </figure>
+      </section>
+
+      <section id="film" data-screen-label="Brand film" style="position: relative; padding: clamp(24px, 4vw, 48px) 0 clamp(40px, 6vw, 72px);">
+        <div style="position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: 28px;">
+          <div>
+            <span style="display: block; font-size: 13px; letter-spacing: 0.06em; font-weight: 600; color: var(--color-accent-700); margin-bottom: 14px;">브랜드 필름</span>
+            <h2 style="font-size: clamp(28px, 3.4vw, 40px); line-height: 1.2;">영상으로 먼저 만나보세요</h2>
+          </div>
+          <p style="margin: 0; font-size: 15px; line-height: 1.6; max-width: 36ch; color: color-mix(in srgb, var(--color-text) 78%, transparent);">습도가 오르면 화산은 백두산으로, 선인장은 꽃으로. 17초 안에 담았어요.</p>
+        </div>
+        <div style="position: relative;">
+          <div aria-hidden="true" style="position: absolute; left: -4%; top: -8%; width: 38%; aspect-ratio: 1; background: var(--color-accent-2-200); border-radius: 62% 38% 55% 45% / 48% 60% 40% 52%; z-index: 0;"></div>
+          <div aria-hidden="true" style="position: absolute; right: -3%; bottom: -10%; width: 30%; aspect-ratio: 1; background: var(--color-accent-200); border-radius: 45% 55% 38% 62% / 55% 42% 58% 45%; z-index: 0;"></div>
+          <div style="position: relative; z-index: 1; aspect-ratio: 16 / 9; border-radius: calc(2 * var(--radius-lg)); overflow: hidden; background: #201E1D; box-shadow: var(--shadow-lg);">
+            <iframe src="film.dc.html?embed=1" title="NATURE MIST 브랜드 필름" loading="lazy" style="position: absolute; left: 0; top: -22px; width: 100%; height: calc(100% + 44px); border: 0; display: block;"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section id="products" data-screen-label="Products" style="padding: clamp(40px, 6vw, 72px) 0;">
+        <span style="display: block; font-size: 13px; letter-spacing: 0.06em; font-weight: 600; color: var(--color-accent-700); margin-bottom: 14px;">세 가지 제품</span>
+        <h2 style="font-size: clamp(28px, 3.4vw, 40px); line-height: 1.2;">작은 자연을 하나 들이세요</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: clamp(20px, 3vw, 32px); margin-top: 40px;">
+          <sc-for list="{{ productCards }}" as="p" hint-placeholder-count="3">
+            <article class="card" onMouseEnter="{{ p.onEnter }}" onMouseLeave="{{ p.onLeave }}" style="padding: 16px; border-radius: calc(2 * var(--radius-lg)); display: flex; flex-direction: column; gap: 20px;">
+              <div onClick="{{ p.open }}" style="cursor: pointer; border-radius: calc(1.5 * var(--radius-lg)); overflow: hidden; aspect-ratio: 1 / 1; background: var(--color-neutral-200); position: relative;">
+                <div role="img" aria-label="{{ p.name }}" style="width: 100%; height: 100%; flex: none; transition: background-image 0.45s ease; background: center / cover no-repeat url('{{ p.img }}');"></div>
+                <span class="tag tag-neutral" style="position: absolute; left: 14px; top: 14px;">{{ p.stateLabel }}</span>
+              </div>
+              <div style="padding: 0 8px 8px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap;">
+                  <h3 style="font-size: 24px; letter-spacing: 0.02em;">{{ p.name }}</h3>
+                  <span style="font-size: 14px; color: color-mix(in srgb, var(--color-text) 70%, transparent);">{{ p.ko }}</span>
+                </div>
+                <p style="margin: 0; font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 78%, transparent);">{{ p.tagline }}</p>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; flex-wrap: wrap;">
+                  <div style="display: flex; align-items: baseline; gap: 8px;">
+                    <span style="font-size: 20px; font-weight: 700;">{{ p.price }}</span>
+                    <sc-if value="{{ p.showOrig }}" hint-placeholder-val="{{ true }}">
+                      <span style="font-size: 14px; text-decoration: line-through; color: color-mix(in srgb, var(--color-text) 55%, transparent);">{{ p.orig }}</span>
+                    </sc-if>
+                  </div>
+                  <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn btn-ghost" onClick="{{ p.open }}">자세히</button>
+                    <button type="button" class="btn btn-primary" onClick="{{ p.add }}">담기</button>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </sc-for>
+        </div>
+      </section>
+
+      <section data-screen-label="Brand story" style="padding: clamp(40px, 6vw, 72px) 0;">
+        <div style="max-width: 760px;">
+          <span style="display: block; font-size: 13px; letter-spacing: 0.06em; font-weight: 600; color: var(--color-accent-700); margin-bottom: 14px;">브랜드 이야기</span>
+          <h2 style="font-size: clamp(28px, 3.6vw, 44px); line-height: 1.25;">습도는 보이지 않아서, 자연의 모습으로 보여주기로 했어요</h2>
+          <p style="margin: 24px 0 0; font-size: 17px; line-height: 1.8; color: color-mix(in srgb, var(--color-text) 80%, transparent);">방이 건조한지, 습한지 우리는 대부분 모르고 지나칩니다. NATURE MIST는 숫자 대신 풍경으로 습도를 알려줘요. 화산이 붉게 타오르면 공기가 건조하다는 뜻이고, 백두산처럼 푸르게 가라앉거나 선인장 꽃이 피어나면 딱 좋은 습도라는 뜻이에요.</p>
+        </div>
+      </section>
+
+      <div style="margin-inline: calc(50% - 50vw); margin-block: clamp(24px, 4vw, 48px);">
+        <svg aria-hidden="true" viewBox="0 0 1440 80" preserveAspectRatio="none" style="display: block; width: 100%; height: clamp(36px, 5vw, 72px);"><path d="M0 80V40c120-26 260-38 420-20s300 46 480 34 300-46 540-34v60z" fill="var(--color-accent-2-100)"></path></svg>
+        <div style="background: var(--color-accent-2-100); margin-top: -1px; margin-bottom: -1px; padding: 0 max(clamp(20px, 5vw, 40px), calc((100vw - 1200px) / 2 + 40px));">
+        <section id="features" data-screen-label="Features" style="padding: clamp(40px, 6vw, 72px) 0;">
+        <span style="display: block; font-size: 13px; letter-spacing: 0.06em; font-weight: 600; color: var(--color-accent-2-700); margin-bottom: 14px;">주요 기능</span>
+        <h2 style="font-size: clamp(28px, 3.4vw, 40px); line-height: 1.2;">예쁘기만 한 가습기가 아니에요</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: clamp(28px, 4vw, 48px); margin-top: 40px;">
+          <div style="display: flex; flex-direction: column; gap: 14px; align-items: flex-start;"><div style="width: 56px; height: 56px; border-radius: 50%; background: var(--color-bg); color: var(--color-accent-2-800); display: grid; place-items: center; flex: none;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path></svg></div><h3 style="font-size: 20px;">자동 습도 감지</h3><p style="margin: 0; font-size: 15px; line-height: 1.65; color: color-mix(in srgb, var(--color-text) 80%, transparent);">실내 습도를 스스로 읽고, 화산의 색과 선인장 꽃의 모습으로 지금 상태를 보여줍니다.</p></div>
+          <div style="display: flex; flex-direction: column; gap: 14px; align-items: flex-start;"><div style="width: 56px; height: 56px; border-radius: 50%; background: var(--color-bg); color: var(--color-accent-2-800); display: grid; place-items: center; flex: none;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="m7 7 10 10-5 5V2l5 5L7 17"></path></svg></div><h3 style="font-size: 20px;">블루투스 제습 연동</h3><p style="margin: 0; font-size: 15px; line-height: 1.65; color: color-mix(in srgb, var(--color-text) 80%, transparent);">너무 습해지면 가습기가 음성으로 알려주고, 블루투스로 연결된 제습기를 자동으로 가동시킵니다.</p></div>
+          <div style="display: flex; flex-direction: column; gap: 14px; align-items: flex-start;"><div style="width: 56px; height: 56px; border-radius: 50%; background: var(--color-bg); color: var(--color-accent-2-800); display: grid; place-items: center; flex: none;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"></path><path d="M16 9a5 5 0 0 1 0 6"></path></svg></div><h3 style="font-size: 20px;">음성 안내</h3><p style="margin: 0; font-size: 15px; line-height: 1.65; color: color-mix(in srgb, var(--color-text) 80%, transparent);">습도가 바뀌면 말로 알려줘요. 화면을 보지 않아도 방 상태를 알 수 있어요.</p></div>
+          <div style="display: flex; flex-direction: column; gap: 14px; align-items: flex-start;"><div style="width: 56px; height: 56px; border-radius: 50%; background: var(--color-bg); color: var(--color-accent-2-800); display: grid; place-items: center; flex: none;"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="m9 12 2 2 4-4"></path></svg></div><h3 style="font-size: 20px;">안심 설계</h3><p style="margin: 0; font-size: 15px; line-height: 1.65; color: color-mix(in srgb, var(--color-text) 80%, transparent);">물이 부족하면 전원이 자동으로 꺼지고, 과열 방지 기능이 있어 밤새 켜두어도 안심이에요.</p></div>
+        </div>
+      </section>
+
+      <section data-screen-label="Smart flow" style="padding: clamp(40px, 6vw, 72px) 0;">
+        <span style="display: block; font-size: 13px; letter-spacing: 0.06em; font-weight: 600; color: var(--color-accent-700); margin-bottom: 14px;">하루의 흐름</span>
+        <h2 style="font-size: clamp(28px, 3.4vw, 40px); line-height: 1.2; max-width: 22ch;">건조할 때도, 너무 습할 때도 알아서</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 20px; margin-top: 40px;">
+          <div style="background: var(--color-accent-100); border-radius: calc(2 * var(--radius-lg)); padding: clamp(22px, 3vw, 32px); display: flex; flex-direction: column; gap: 12px;"><span style="width: 44px; height: 44px; border-radius: 50%; background: var(--color-bg); color: var(--color-accent-700); display: grid; place-items: center; font-family: 'Caprasimo', sans-serif; font-size: 18px;">1</span><h3 style="font-size: 22px;">건조할 때</h3><p style="margin: 0; font-size: 15px; line-height: 1.65;">화산은 붉게 빛나며 분무를 시작하고, 선인장은 꽃을 닫은 채 수분을 공급해요.</p></div>
+          <div style="background: var(--color-accent-2-200); border-radius: calc(2 * var(--radius-lg)); padding: clamp(22px, 3vw, 32px); display: flex; flex-direction: column; gap: 12px;"><span style="width: 44px; height: 44px; border-radius: 50%; background: var(--color-bg); color: var(--color-accent-2-800); display: grid; place-items: center; font-family: 'Caprasimo', sans-serif; font-size: 18px;">2</span><h3 style="font-size: 22px;">습도가 적당할 때</h3><p style="margin: 0; font-size: 15px; line-height: 1.65;">화산은 차분한 파란색 백두산으로, 선인장은 꽃을 활짝 피워 딱 좋은 습도를 알려줘요.</p></div>
+          <div style="background: var(--color-neutral-200); border-radius: calc(2 * var(--radius-lg)); padding: clamp(22px, 3vw, 32px); display: flex; flex-direction: column; gap: 12px;"><span style="width: 44px; height: 44px; border-radius: 50%; background: var(--color-bg); color: var(--color-text); display: grid; place-items: center; font-family: 'Caprasimo', sans-serif; font-size: 18px;">3</span><h3 style="font-size: 22px;">너무 습할 때</h3><p style="margin: 0; font-size: 15px; line-height: 1.65;">음성으로 알려준 뒤 블루투스로 제습기를 가동시켜 다시 쾌적한 상태로 돌려놓아요.</p></div>
+        </div>
+      </section>
+        </div>
+        <svg aria-hidden="true" viewBox="0 0 1440 80" preserveAspectRatio="none" style="display: block; width: 100%; height: clamp(36px, 5vw, 72px); transform: scaleY(-1);"><path d="M0 80V40c120-26 260-38 420-20s300 46 480 34 300-46 540-34v60z" fill="var(--color-accent-2-100)"></path></svg>
+      </div>
+
+      <section data-screen-label="Compare" style="padding: clamp(40px, 6vw, 72px) 0;">
+        <span style="display: block; font-size: 13px; letter-spacing: 0.06em; font-weight: 600; color: var(--color-accent-2-700); margin-bottom: 14px;">한눈에 비교</span>
+        <h2 style="font-size: clamp(28px, 3.4vw, 40px); line-height: 1.2;">나에게 맞는 가습기는?</h2>
+        <div style="overflow-x: auto; margin-top: 32px;">
+          <table class="table" style="width: 100%; min-width: 520px;">
+            <thead><tr><th></th><th>VOLCANO MIST</th><th>CACTUS BLOOM</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight: 600;">습도 표시</td><td>빨강(건조) · 파랑(적정)</td><td>꽃 닫힘(건조) · 꽃 핌(적정)</td></tr>
+              <tr><td style="font-weight: 600;">무드등</td><td>빨강·파랑 2가지 컬러 모드</td><td>LED 색상으로 습도 표시</td></tr>
+              <tr><td style="font-weight: 600;">분무</td><td>강/약 2단계 조절</td><td>습도에 따라 자동 개화</td></tr>
+              <tr><td style="font-weight: 600;">블루투스 제습 연동</td><td>지원</td><td>지원</td></tr>
+              <tr><td style="font-weight: 600;">안전</td><td>물 부족 시 자동 전원 차단</td><td>과열 방지 기능</td></tr>
+              <tr><td style="font-weight: 600;">그 밖에</td><td>저소음 설계 (최대 30dB)</td><td>분리형 구조로 간편한 세척</td></tr>
+              <tr><td style="font-weight: 600;">어울리는 공간</td><td>거실처럼 존재감이 필요한 곳</td><td>침실·책상처럼 조용한 곳</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="how" data-screen-label="How it works" style="padding: clamp(40px, 6vw, 72px) 0;">
+        <span style="display: block; font-size: 13px; letter-spacing: 0.06em; font-weight: 600; color: var(--color-accent-2-700); margin-bottom: 14px;">작동 방식</span>
+        <h2 style="font-size: clamp(28px, 3.4vw, 40px); line-height: 1.2; max-width: 20ch;">습도를 읽고, 모습을 바꿉니다</h2>
+        <div style="display: flex; gap: 8px; margin-top: 28px; flex-wrap: wrap;">
+          <div class="seg">
+            <label class="seg-opt" style="white-space: nowrap;"><input type="radio" name="how" checked="{{ howDry }}" onChange="{{ setHowDry }}">건조할 때</label>
+            <label class="seg-opt" style="white-space: nowrap;"><input type="radio" name="how" checked="{{ howHumid }}" onChange="{{ setHowHumid }}">습도가 적당할 때</label>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: clamp(20px, 3vw, 40px); margin-top: 32px;">
+          <sc-for list="{{ howCards }}" as="h" hint-placeholder-count="2">
+            <div style="display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 24px; align-items: center; background: var(--color-accent-2-100); border-radius: calc(2 * var(--radius-lg)); padding: 20px;">
+              <div style="width: 140px; height: 140px; border-radius: 50%; overflow: hidden; background: var(--color-neutral-200);">
+                <div role="img" aria-label="{{ h.name }}" style="width: 100%; height: 100%; flex: none; transition: background-image 0.45s ease; background: center / cover no-repeat url('{{ h.img }}');"></div>
+              </div>
+              <div>
+                <h3 style="font-size: 20px;">{{ h.name }}</h3>
+                <p style="margin: 8px 0 0; font-weight: 700; color: var(--color-accent-2-800); font-size: 15px;">{{ h.stateLabel }}</p>
+                <p style="margin: 8px 0 0; font-size: 15px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 80%, transparent);">{{ h.stateCopy }}</p>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="mood" data-screen-label="Mood finder" style="padding: clamp(40px, 6vw, 72px) 0;">
+        <div style="background: var(--color-accent-100); border-radius: calc(2 * var(--radius-lg)); padding: clamp(28px, 5vw, 64px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(28px, 4vw, 56px); align-items: center;">
+          <div>
+            <span style="display: block; font-size: 13px; letter-spacing: 0.06em; font-weight: 600; color: var(--color-accent-700); margin-bottom: 14px;">무드 추천</span>
+            <h2 style="font-size: clamp(26px, 3vw, 34px); line-height: 1.25;">어떤 공간에 두실 건가요?</h2>
+            <div style="display: flex; flex-direction: column; gap: 20px; margin-top: 28px;">
+              <div>
+                <p style="margin: 0 0 10px; font-size: 14px; font-weight: 600;">공간</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <sc-for list="{{ spaceOpts }}" as="o" hint-placeholder-count="3">
+                    <button type="button" class="{{ o.cls }}" onClick="{{ o.pick }}">{{ o.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <p style="margin: 0 0 10px; font-size: 14px; font-weight: 600;">원하는 분위기</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <sc-for list="{{ vibeOpts }}" as="o" hint-placeholder-count="2">
+                    <button type="button" class="{{ o.cls }}" onClick="{{ o.pick }}">{{ o.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="background: var(--color-bg); border-radius: calc(1.5 * var(--radius-lg)); padding: 20px; display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 20px; align-items: center; box-shadow: var(--shadow-sm);">
+            <div style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden;">
+              <div role="img" aria-label="{{ rec.name }}" style="width: 100%; height: 100%; flex: none; transition: background-image 0.45s ease; background: center / cover no-repeat url('{{ rec.img }}');"></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-start;">
+              <span class="tag tag-accent-2">추천</span>
+              <h3 style="font-size: 22px;">{{ rec.name }}</h3>
+              <p style="margin: 0; font-size: 14px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 80%, transparent);">{{ recReason }}</p>
+              <button type="button" class="btn btn-primary" onClick="{{ rec.open }}" style="margin-top: 6px;">{{ rec.price }} · 보러가기</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="faq" data-screen-label="FAQ" style="padding: 0 0 clamp(64px, 8vw, 104px);">
+        <span style="display: block; font-size: 13px; letter-spacing: 0.06em; font-weight: 600; color: var(--color-accent-700); margin-bottom: 14px;">자주 묻는 질문</span>
+        <h2 style="font-size: clamp(28px, 3.4vw, 40px); line-height: 1.2;">궁금한 점이 있으신가요?</h2>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 32px; max-width: 820px;">
+          <details style="background: var(--color-neutral-200); border-radius: var(--radius-lg); padding: 18px 22px;"><summary style="cursor: pointer; font-weight: 700; font-size: 16px;">결제는 어떻게 하나요?</summary><p style="margin: 12px 0 0; font-size: 15px; line-height: 1.7; color: color-mix(in srgb, var(--color-text) 80%, transparent);">무통장 입금과 신용·체크카드 결제를 지원해요. 무통장 입금은 주문 후 안내되는 계좌로 입금해 주시고, 카드 결제는 결제 링크로 진행돼요. 결제가 확인되면 바로 발송합니다.</p></details>
+          <details style="background: var(--color-neutral-200); border-radius: var(--radius-lg); padding: 18px 22px;"><summary style="cursor: pointer; font-weight: 700; font-size: 16px;">배송비는 얼마인가요?</summary><p style="margin: 12px 0 0; font-size: 15px; line-height: 1.7; color: color-mix(in srgb, var(--color-text) 80%, transparent);">7만원 이상 주문 시 무료배송이고, 7만원 미만은 배송비 3,000원이 붙어요.</p></details>
+          <details style="background: var(--color-neutral-200); border-radius: var(--radius-lg); padding: 18px 22px;"><summary style="cursor: pointer; font-weight: 700; font-size: 16px;">언제 도착하나요?</summary><p style="margin: 12px 0 0; font-size: 15px; line-height: 1.7; color: color-mix(in srgb, var(--color-text) 80%, transparent);">입금 확인 후 영업일 기준 2~3일 안에 도착합니다.</p></details>
+          <details style="background: var(--color-neutral-200); border-radius: var(--radius-lg); padding: 18px 22px;"><summary style="cursor: pointer; font-weight: 700; font-size: 16px;">제습기 연동은 꼭 필요한가요?</summary><p style="margin: 12px 0 0; font-size: 15px; line-height: 1.7; color: color-mix(in srgb, var(--color-text) 80%, transparent);">아니요. 가습기만으로도 모든 기능을 쓸 수 있어요. 미니 제습기를 함께 두면 너무 습할 때 자동으로 제습까지 해줍니다.</p></details>
+        </div>
+      </section>
+
+    </div>
+  </sc-if>
+
+  <!-- PRODUCT DETAIL -->
+  <sc-if value="{{ isProduct }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Product detail" style="max-width: 1200px; margin: 0 auto; padding: 32px clamp(20px, 5vw, 40px) clamp(64px, 8vw, 104px);">
+      <button type="button" class="btn btn-ghost" onClick="{{ goHome }}" style="margin-left: -12px;">← 전체 제품</button>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: clamp(32px, 5vw, 72px); margin-top: 24px; align-items: start;">
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div style="border-radius: calc(2 * var(--radius-lg)); overflow: hidden; aspect-ratio: 1 / 1; background: var(--color-neutral-200);">
+            <div role="img" aria-label="{{ cur.name }}" style="width: 100%; height: 100%; flex: none; transition: background-image 0.45s ease; background: center / cover no-repeat url('{{ cur.img }}');"></div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <sc-for list="{{ curThumbs }}" as="t" hint-placeholder-count="2">
+              <button type="button" onClick="{{ t.pick }}" style="{{ t.style }}">
+                <div role="img" aria-label="{{ t.label }}" style="width: 72px; height: 72px; border-radius: 50%; flex: none; transition: background-image 0.45s ease; background: center / cover no-repeat url('{{ t.img }}');"></div>
+                <span style="font-size: 14px; font-weight: 600; text-align: left;">{{ t.label }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <span style="font-size: 13px; letter-spacing: 0.06em; font-weight: 600; color: var(--color-accent-700);">{{ cur.num }} · {{ cur.ko }}</span>
+          <h1 style="font-size: clamp(36px, 4.4vw, 52px); line-height: 1.1; letter-spacing: 0.02em;">{{ cur.name }}</h1>
+          <h2 style="font-size: 22px; line-height: 1.4;">{{ cur.tagline }}</h2>
+          <p style="margin: 0; font-size: 16px; line-height: 1.75; color: color-mix(in srgb, var(--color-text) 80%, transparent); max-width: 48ch;">{{ cur.desc }}</p>
+          <div style="display: flex; align-items: baseline; gap: 10px;">
+            <span style="font-size: 28px; font-weight: 700;">{{ cur.price }}</span>
+            <sc-if value="{{ cur.showOrig }}" hint-placeholder-val="{{ true }}">
+              <span style="font-size: 16px; text-decoration: line-through; color: color-mix(in srgb, var(--color-text) 55%, transparent);">{{ cur.orig }}</span>
+              <span class="tag tag-accent">10%</span>
+            </sc-if>
+          </div>
+          <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 4px; background: var(--color-neutral-200); border-radius: 999px; padding: 4px;">
+              <button type="button" class="btn btn-ghost btn-icon" onClick="{{ decQty }}" aria-label="수량 줄이기">−</button>
+              <span style="min-width: 28px; text-align: center; font-weight: 700;">{{ qty }}</span>
+              <button type="button" class="btn btn-ghost btn-icon" onClick="{{ incQty }}" aria-label="수량 늘리기">+</button>
+            </div>
+            <button type="button" class="btn btn-primary" onClick="{{ addCur }}" style="flex: 1; min-width: 160px;">장바구니 담기</button>
+            <button type="button" class="btn btn-secondary" onClick="{{ buyNow }}">바로 구매</button>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px; margin-top: 12px;">
+            <sc-for list="{{ cur.features }}" as="f" hint-placeholder-count="4">
+              <div style="background: var(--color-accent-2-100); border-radius: var(--radius-lg); padding: 16px 18px; display: flex; gap: 14px; align-items: center;">
+                <span style="width: 12px; height: 12px; border-radius: 50%; background: var(--color-accent-2); flex: none;"></span>
+                <div>
+                  <p style="margin: 0; font-weight: 700; font-size: 15px;">{{ f.t }}</p>
+                  <p style="margin: 2px 0 0; font-size: 13px; color: color-mix(in srgb, var(--color-text) 75%, transparent);">{{ f.d }}</p>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ showAddonCard }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 12px; background: var(--color-neutral-200); border-radius: calc(1.5 * var(--radius-lg)); padding: 16px; display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 18px; align-items: center;">
+            <div role="img" aria-label="{{ addon.name }}" style="width: 88px; height: 88px; border-radius: 50%; background: center / cover no-repeat url('{{ addon.img }}');"></div>
+            <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
+              <span class="tag tag-accent-2">함께 구매하면 좋아요</span>
+              <p style="margin: 0; font-weight: 700; font-size: 17px;">{{ addon.name }} · {{ addon.price }}</p>
+              <p style="margin: 0; font-size: 14px; line-height: 1.5; color: color-mix(in srgb, var(--color-text) 78%, transparent);">{{ addon.tagline }}</p>
+              <button type="button" class="btn btn-secondary" onClick="{{ addon.add }}" disabled="{{ addon.added }}" style="margin-top: 4px;">{{ addon.btn }}</button>
+            </div>
+          </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- CHECKOUT -->
+  <sc-if value="{{ isCheckout }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Checkout" style="max-width: 1080px; margin: 0 auto; padding: 32px clamp(20px, 5vw, 40px) clamp(64px, 8vw, 104px);">
+      <button type="button" class="btn btn-ghost" onClick="{{ goHome }}" style="margin-left: -12px;">← 쇼핑 계속하기</button>
+      <h1 style="font-size: clamp(32px, 4vw, 44px); margin-top: 20px;">주문하기</h1>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); gap: clamp(28px, 4vw, 56px); margin-top: 32px; align-items: start;">
+        <div style="display: flex; flex-direction: column; gap: 18px;">
+          <h2 style="font-size: 20px;">배송 정보</h2>
+          <div class="field"><label>받는 분</label><input class="input" type="text" placeholder="이름" value="{{ form.name }}" onChange="{{ onName }}"></div>
+          <div class="field"><label>연락처</label><input class="input" type="tel" placeholder="010-0000-0000" value="{{ form.phone }}" onChange="{{ onPhone }}"></div>
+          <div class="field"><label>주소</label>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <input class="input" type="text" placeholder="우편번호" value="{{ form.zip }}" readOnly="{{ true }}" onClick="{{ openAddr }}" style="flex: 0 1 140px; min-width: 0; cursor: pointer;">
+              <button type="button" class="btn btn-secondary" onClick="{{ openAddr }}">주소 검색</button>
+            </div>
+            <input class="input" type="text" placeholder="주소 검색을 눌러 주소를 찾아주세요" value="{{ form.base }}" readOnly="{{ true }}" onClick="{{ openAddr }}" style="cursor: pointer;">
+            <input class="input" type="text" placeholder="상세 주소 (동·호수)" value="{{ form.detail }}" onChange="{{ onDetail }}" ref="{{ detailRef }}">
+          </div>
+          <div class="field"><label>배송 메모 (선택)</label><input class="input" type="text" placeholder="예: 문 앞에 놓아주세요" value="{{ form.memo }}" onChange="{{ onMemo }}"></div>
+          <h2 style="font-size: 20px; margin-top: 12px;">결제 방법</h2>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <sc-for list="{{ payOpts }}" as="o" hint-placeholder-count="2">
+              <label class="radio"><input type="radio" name="pay" checked="{{ o.checked }}" onChange="{{ o.pick }}"><span class="dot"></span>{{ o.label }}</label>
+            </sc-for>
+          </div>
+          <sc-if value="{{ payIsCard }}" hint-placeholder-val="{{ false }}">
+            <p style="margin: 0; font-size: 13px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 75%, transparent);">{{ cardNote }}</p>
+          </sc-if>
+          <sc-if value="{{ payNotCard }}" hint-placeholder-val="{{ true }}">
+          <div class="field"><label>입금자명</label><input class="input" type="text" placeholder="{{ depositorPh }}" value="{{ form.depositor }}" onChange="{{ onDepositor }}"></div>
+          <p style="margin: 0; font-size: 13px; line-height: 1.6; color: color-mix(in srgb, var(--color-text) 75%, transparent);">주문 후 안내되는 계좌로 {{ depositHours }}시간 안에 입금해 주세요. 입금이 확인되면 연락처로 안내드리고 바로 발송합니다.</p>
+          </sc-if>
+        </div>
+        <div style="background: var(--color-accent-2-100); border-radius: calc(2 * var(--radius-lg)); padding: clamp(20px, 3vw, 32px); display: flex; flex-direction: column; gap: 16px;">
+          <h2 style="font-size: 20px;">주문 상품</h2>
+          <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}">
+            <p style="margin: 0; font-size: 15px;">장바구니가 비어 있어요.</p>
+          </sc-if>
+          <sc-for list="{{ cartLines }}" as="l" hint-placeholder-count="1">
+            <div style="display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 14px; align-items: center;">
+              <div role="img" aria-label="{{ l.name }}" style="width: 56px; height: 56px; border-radius: 50%; flex: none; transition: background-image 0.45s ease; background: center / cover no-repeat url('{{ l.img }}');"></div>
+              <div><p style="margin: 0; font-weight: 700;">{{ l.name }}</p><p style="margin: 2px 0 0; font-size: 13px;">수량 {{ l.qty }}</p></div>
+              <span style="font-weight: 700;">{{ l.total }}</span>
+            </div>
+          </sc-for>
+          <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 16px; border-top: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent); font-size: 15px;">
+            <div style="display: flex; justify-content: space-between;"><span>상품 금액</span><span>{{ subtotal }}</span></div>
+            <div style="display: flex; justify-content: space-between;"><span>배송비</span><span>{{ shipping }}</span></div>
+            <p style="margin: 0; font-size: 13px; color: var(--color-accent-2-800);">7만원 이상 무료배송 · 7만원 미만 배송비 3,000원 · {{ shipNote }}</p>
+            <div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: 700; margin-top: 6px;"><span>합계</span><span>{{ total }}</span></div>
+          </div>
+          <button type="button" class="btn btn-primary btn-block" onClick="{{ placeOrder }}" disabled="{{ orderDisabled }}">{{ orderBtn }}</button>
+          <sc-if value="{{ formHint }}" hint-placeholder-val="{{ false }}">
+            <p style="margin: 0; font-size: 13px; color: var(--color-accent-800);">받는 분, 연락처, 주소를 입력해 주세요.</p>
+          </sc-if>
+          <sc-if value="{{ sendError }}" hint-placeholder-val="{{ false }}">
+            <p style="margin: 0; font-size: 13px; color: var(--color-accent-800);">주문 전송에 실패했어요. 잠시 후 다시 시도해 주세요.</p>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- DONE -->
+  <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Order complete" style="max-width: 720px; margin: 0 auto; padding: clamp(64px, 10vw, 120px) clamp(20px, 5vw, 40px); display: flex; flex-direction: column; gap: 20px; align-items: flex-start;">
+      <div style="width: 96px; height: 96px; border-radius: 50%; background: var(--color-accent-2-200); display: grid; place-items: center; color: var(--color-accent-2-800);">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>
+      </div>
+      <h1 style="font-size: clamp(32px, 4vw, 44px); line-height: 1.2;">주문이 접수되었어요</h1>
+      <sc-if value="{{ orderIsCard }}" hint-placeholder-val="{{ false }}">
+        <p style="margin: 0; font-size: 16px; line-height: 1.7; color: color-mix(in srgb, var(--color-text) 80%, transparent);">주문번호 {{ orderNo }} · {{ cardDoneCopy }}</p>
+        <div style="width: 100%; box-sizing: border-box; background: var(--color-accent-100); border-radius: calc(2 * var(--radius-lg)); padding: clamp(20px, 3vw, 32px); display: flex; flex-direction: column; gap: 16px; align-items: flex-start;">
+          <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; width: 100%;"><span>결제 금액</span><span style="font-size: 22px; font-weight: 700;">{{ orderTotal }}</span></div>
+          <sc-if value="{{ hasCardLink }}" hint-placeholder-val="{{ false }}">
+            <a href="{{ cardHref }}" target="_blank" rel="noopener" class="btn btn-primary">카드로 {{ orderTotal }} 결제하기</a>
+          </sc-if>
+        </div>
+      </sc-if>
+      <sc-if value="{{ orderNotCard }}" hint-placeholder-val="{{ true }}">
+      <p style="margin: 0; font-size: 16px; line-height: 1.7; color: color-mix(in srgb, var(--color-text) 80%, transparent);">주문번호 {{ orderNo }} · 아래 계좌로 {{ depositHours }}시간 안에 입금해 주세요. 입금이 확인되면 {{ orderPhone }}로 안내드리고 발송합니다.</p>
+      <div style="width: 100%; box-sizing: border-box; background: var(--color-accent-2-100); border-radius: calc(2 * var(--radius-lg)); padding: clamp(20px, 3vw, 32px); display: flex; flex-direction: column; gap: 14px; font-size: 15px;">
+        <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;"><span>입금 금액</span><span style="font-size: 22px; font-weight: 700;">{{ orderTotal }}</span></div>
+        <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center;">
+          <span>입금 계좌</span>
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <span style="font-weight: 700;">{{ bankLine }}</span>
+            <button type="button" class="btn btn-secondary" onClick="{{ copyAccount }}" style="padding-block: 6px; font-size: 13px;">{{ copyLabel }}</button>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;"><span>예금주</span><span style="font-weight: 700;">{{ accountHolder }}</span></div>
+        <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;"><span>입금자명</span><span style="font-weight: 700;">{{ orderDepositor }}</span></div>
+        <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;"><span>입금 기한</span><span style="font-weight: 700;">{{ orderDeadline }}</span></div>
+      </div>
+      </sc-if>
+      <sc-if value="{{ showToss }}" hint-placeholder-val="{{ false }}">
+        <a href="{{ tossHref }}" target="_blank" rel="noopener" class="btn btn-primary">토스로 {{ orderTotal }} 송금하기</a>
+      </sc-if>
+      <sc-if value="{{ showMailFallback }}" hint-placeholder-val="{{ false }}">
+        <a href="{{ mailHref }}" class="btn btn-secondary">주문 내용 판매자에게 보내기</a>
+      </sc-if>
+      <button type="button" class="btn btn-primary" onClick="{{ goHome }}">홈으로</button>
+    </div>
+  </sc-if>
+  </main>
+
+  <div aria-hidden="true" style="line-height: 0;">
+    <svg viewBox="0 0 1440 180" preserveAspectRatio="none" style="display: block; width: 100%; height: clamp(80px, 12vw, 180px);">
+      <path d="M0 180V110l140-60 120 40 160-80 150 70 110-30 170 90 140-60 130 30 160-70 160 70v50z" fill="var(--color-accent-2-300)"></path>
+      <path d="M0 180v-40l180-50 160 40 200-60 180 60 160-30 200 50 180-40 180 30v40z" fill="var(--color-accent-2-700)"></path>
+    </svg>
+  </div>
+  <footer style="background: var(--color-accent-2-700); padding: 40px max(20px, calc((100% - 1200px) / 2 + 40px)); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--color-bg); margin-top: -1px;">
+    <span style="font-family: 'Caprasimo', 'Jua', sans-serif; font-size: 16px; color: var(--color-bg); letter-spacing: 0.08em;">NATURE MIST</span>
+    <span>Nature · Mood · Life</span>
+  </footer>
+
+  <sc-if value="{{ addrOpen }}" hint-placeholder-val="{{ false }}">
+    <div class="dialog-backdrop" onClick="{{ closeAddr }}" style="position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 16px;">
+      <div class="dialog" onClick="{{ stop }}" style="width: min(520px, 100%); padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h2 class="dialog-title" style="font-size: 22px; margin: 0;">주소 검색</h2>
+          <button type="button" class="btn btn-ghost btn-icon" onClick="{{ closeAddr }}" aria-label="닫기">✕</button>
+        </div>
+        <div ref="{{ addrBoxRef }}" style="width: 100%; height: 470px; border-radius: var(--radius-lg); overflow: hidden; background: #fff;"></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- CART DRAWER -->
+  <sc-if value="{{ cartOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeCart }}" style="position: fixed; inset: 0; background: color-mix(in srgb, var(--color-text) 35%, transparent); z-index: 40;"></div>
+    <aside style="position: fixed; top: 12px; right: 12px; bottom: 12px; width: min(420px, calc(100% - 24px)); background: var(--color-bg); border-radius: calc(1.5 * var(--radius-lg)); box-shadow: var(--shadow-lg); z-index: 41; display: flex; flex-direction: column; padding: 24px; box-sizing: border-box; gap: 20px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="font-size: 24px;">장바구니</h2>
+        <button type="button" class="btn btn-ghost btn-icon" onClick="{{ closeCart }}" aria-label="닫기">✕</button>
+      </div>
+      <div style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
+        <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}">
+          <p style="margin: 0; font-size: 15px; color: color-mix(in srgb, var(--color-text) 75%, transparent);">아직 담긴 상품이 없어요.</p>
+        </sc-if>
+        <sc-for list="{{ cartLines }}" as="l" hint-placeholder-count="1">
+          <div style="display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 16px; align-items: center; background: var(--color-neutral-200); border-radius: var(--radius-lg); padding: 12px;">
+            <div role="img" aria-label="{{ l.name }}" style="width: 72px; height: 72px; border-radius: 50%; flex: none; transition: background-image 0.45s ease; background: center / cover no-repeat url('{{ l.img }}');"></div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; justify-content: space-between; gap: 8px;"><span style="font-weight: 700;">{{ l.name }}</span><span style="font-weight: 700;">{{ l.total }}</span></div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <button type="button" class="btn btn-ghost btn-icon" onClick="{{ l.dec }}" aria-label="수량 줄이기">−</button>
+                <span style="min-width: 20px; text-align: center;">{{ l.qty }}</span>
+                <button type="button" class="btn btn-ghost btn-icon" onClick="{{ l.inc }}" aria-label="수량 늘리기">+</button>
+                <button type="button" class="btn btn-ghost" onClick="{{ l.remove }}" style="margin-left: auto; font-size: 13px;">삭제</button>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <sc-if value="{{ showAddon }}" hint-placeholder-val="{{ false }}">
+        <div style="background: var(--color-accent-2-100); border-radius: var(--radius-lg); padding: 14px; display: grid; grid-template-columns: 60px minmax(0, 1fr) auto; gap: 14px; align-items: center;">
+          <div role="img" aria-label="{{ addon.name }}" style="width: 60px; height: 60px; border-radius: 50%; background: center / cover no-repeat url('{{ addon.img }}');"></div>
+          <div>
+            <p style="margin: 0; font-size: 12px; font-weight: 600; color: var(--color-accent-2-800);">함께 구매하면 좋아요</p>
+            <p style="margin: 2px 0 0; font-weight: 700;">{{ addon.name }}</p>
+            <p style="margin: 2px 0 0; font-size: 14px;">{{ addon.price }}</p>
+          </div>
+          <button type="button" class="btn btn-secondary" onClick="{{ addon.add }}">담기</button>
+        </div>
+      </sc-if>
+      <div style="display: flex; flex-direction: column; gap: 10px; font-size: 15px;">
+        <p style="margin: 0; font-size: 13px; color: var(--color-accent-2-800);">{{ shipNote }}</p>
+        <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: 700;"><span>합계</span><span>{{ total }}</span></div>
+        <button type="button" class="btn btn-primary btn-block" onClick="{{ toCheckout }}" disabled="{{ cartEmpty }}">주문하기</button>
+      </div>
+    </aside>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;launchSale&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;판매&quot;},&quot;bankName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;국민은행&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;입금 계좌&quot;},&quot;accountNumber&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;000000-00-000000&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;입금 계좌&quot;},&quot;accountHolder&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;예금주&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;입금 계좌&quot;},&quot;depositHours&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:24,&quot;min&quot;:1,&quot;max&quot;:168,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;입금 계좌&quot;},&quot;tossLink&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;입금 계좌&quot;},&quot;cardPayLink&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;입금 계좌&quot;},&quot;orderEndpoint&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;주문 알림&quot;},&quot;sellerEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;주문 알림&quot;}}">
+class Component extends DCLogic {
+  state = { page: 'home', pid: 'volcano', mode: 'dry', qty: 1, hover: null, how: 'dry', cart: [], cartOpen: false, space: '거실', vibe: '차분한', pay: 'bank', sending: false, sendError: false, copied: false, order: null, addrOpen: false, form: { zip: '', base: '', detail: '', memo: '', depositor: '', name: '', phone: '', addr: '' }, tried: false, orderNo: '' };
+  P = {
+    dehum: { id: 'dehum', addon: true, num: '03', name: 'MINI DRY', ko: '미니 제습기', variant: '백두산', base: 39000, dry: 'dehum.png?v=2', humid: 'dehumC.png?v=2',
+      cardLabel: '제습기 · 백두산 / 야자수 섬 디자인',
+      tagline: '가습기와 블루투스로 연결돼요. 너무 습해지면 가습기가 음성으로 알려주고 제습기를 자동으로 켭니다.',
+      desc: '가습기와 짝을 이루는 작은 제습기예요. 백두산과 야자수 섬, 두 가지 디자인 중에 고를 수 있어요. 블루투스로 NATURE MIST 가습기와 연결해 두면, 방이 너무 습해졌을 때 가습기가 음성으로 알려주고 제습기를 자동으로 가동시킵니다. 제습기만 따로 두고 써도 돼요.',
+      features: [{ t: '블루투스 자동 연동', d: '너무 습하면 가습기 신호로 자동 가동' }, { t: '단독 사용', d: '가습기 없이도 사용 가능' }, { t: '습도 표시창', d: '현재 습도를 숫자로 표시' }, { t: '두 가지 디자인', d: '백두산 · 야자수 섬 중 선택' }] },
+    dehumC: { id: 'dehumC', addon: true, num: '03', name: 'MINI DRY', ko: '미니 제습기', variant: '야자수 섬', base: 39000, dry: 'dehumC.png?v=2', humid: 'dehum.png?v=2',
+      cardLabel: '제습기 · 백두산 / 야자수 섬 디자인',
+      tagline: '가습기와 블루투스로 연결돼요. 너무 습해지면 가습기가 음성으로 알려주고 제습기를 자동으로 켭니다.',
+      desc: '가습기와 짝을 이루는 작은 제습기예요. 백두산과 야자수 섬, 두 가지 디자인 중에 고를 수 있어요. 블루투스로 NATURE MIST 가습기와 연결해 두면, 방이 너무 습해졌을 때 가습기가 음성으로 알려주고 제습기를 자동으로 가동시킵니다. 제습기만 따로 두고 써도 돼요.',
+      features: [{ t: '블루투스 자동 연동', d: '너무 습하면 가습기 신호로 자동 가동' }, { t: '단독 사용', d: '가습기 없이도 사용 가능' }, { t: '습도 표시창', d: '현재 습도를 숫자로 표시' }, { t: '두 가지 디자인', d: '백두산 · 야자수 섬 중 선택' }] },
+    volcano: { id: 'volcano', num: '01', name: 'VOLCANO MIST', ko: '화산 가습기', base: 79000, dry: 'volRed.png', humid: 'volBlue.png',
+      dryLabel: '건조할 때 · 화산 분출 모드', humidLabel: '습도가 적당할 때 · 백두산 모드',
+      dryCopy: '붉은 빛과 분무로 수분을 공급합니다.', humidCopy: '차분한 파란색 백두산처럼 변합니다. 너무 습해지면 음성으로 알려주고, 블루투스로 제습기를 가동시킵니다.',
+      tagline: '습도에 따라 변하는 두 가지 매력',
+      desc: '건조할 때는 화산처럼 강렬하게, 습도가 적당해지면 백두산처럼 차분하고 푸르게 변합니다.',
+      features: [{ t: '분무량 조절', d: '강/약 2단계 조절' }, { t: 'LED 무드등', d: '빨강·파랑 2가지 컬러 모드' }, { t: '자동 전원 차단', d: '물 부족 시 자동 차단' }, { t: '저소음 설계', d: '최대 30dB' }, { t: '블루투스 제습 연동', d: '너무 습하면 음성 안내 후 제습기 자동 가동' }] },
+    cactus: { id: 'cactus', num: '02', name: 'CACTUS BLOOM', ko: '선인장 가습기', base: 59000, dry: 'cacClosed.png', humid: 'cacOpen.png',
+      dryLabel: '건조할 때 · 꽃 닫힘', humidLabel: '습도가 적당할 때 · 꽃 활짝 핌',
+      dryCopy: '꽃을 닫고 수분을 공급하기 시작합니다.', humidCopy: '적정 습도에 도달하면 꽃이 활짝 피어납니다. 너무 습해지면 음성으로 알려주고, 블루투스로 제습기를 가동시킵니다.',
+      tagline: '건조할 땐 닫히고, 촉촉할 땐 피어나는 꽃',
+      desc: '실내 습도가 낮으면 꽃이 닫혀 있고, 가습이 시작되면 수분을 공급하여 아름다운 꽃이 활짝 피어납니다.',
+      features: [{ t: '자동 습도 감지', d: 'LED 색상으로 표시' }, { t: '꽃 개화 모드', d: '습도에 따라 자동 개화' }, { t: '간편한 세척', d: '분리형 구조' }, { t: '안전한 사용', d: '과열 방지 기능' }, { t: '블루투스 제습 연동', d: '너무 습하면 음성 안내 후 제습기 자동 가동' }] }
+  };
+  cfg() { const p = this.props; return { bank: p.bankName ?? '국민은행', account: p.accountNumber ?? '000000-00-000000', holder: p.accountHolder ?? '예금주', toss: (p.tossLink ?? '').trim(), card: (p.cardPayLink ?? '').trim(), endpoint: (p.orderEndpoint ?? '').trim(), email: (p.sellerEmail ?? '').trim(), hours: p.depositHours ?? 24 }; }
+  async submitOrder(sub, ship) {
+    const s = this.state, cfg = this.cfg(), f = s.form;
+    const orderNo = 'NM' + Date.now().toString().slice(-8);
+    const deadline = new Date(Date.now() + cfg.hours * 3600e3);
+    const dl = (deadline.getMonth() + 1) + '월 ' + deadline.getDate() + '일 ' + String(deadline.getHours()).padStart(2, '0') + ':' + String(deadline.getMinutes()).padStart(2, '0') + '까지';
+    const items = s.cart.map(c => (this.P[c.id].variant ? this.P[c.id].name + ' · ' + this.P[c.id].variant : this.P[c.id].name) + ' x' + c.qty + ' (' + this.won(this.unit(this.P[c.id]) * c.qty) + ')').join(', ');
+    const depositor = f.depositor.trim() || f.name;
+    const data = { 주문번호: orderNo, 상품: items, 상품금액: this.won(sub), 배송비: this.won(ship), 입금금액: this.won(sub + ship), 결제방법: s.pay === 'card' ? '카드 결제' : s.pay === 'toss' ? '토스 송금' : '무통장 입금', 입금자명: depositor, 받는분: f.name, 연락처: f.phone, 주소: (f.zip ? '(' + f.zip + ') ' : '') + f.addr, 배송메모: f.memo, 입금기한: dl };
+    const body = Object.entries(data).map(([k, v]) => k + ': ' + v).join('\n');
+    const mail = cfg.email ? 'mailto:' + cfg.email + '?subject=' + encodeURIComponent('[NATURE MIST 주문] ' + orderNo) + '&body=' + encodeURIComponent(body) : '';
+    if (cfg.endpoint) {
+      this.setState({ sending: true, sendError: false });
+      try {
+        const r = await fetch(cfg.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ ...data, _subject: '[NATURE MIST 주문] ' + orderNo }) });
+        if (!r.ok) throw new Error(r.status);
+      } catch (e) { return this.setState({ sending: false, sendError: true }); }
+    }
+    if (s.pay === 'card' && cfg.card) window.open(cfg.card, '_blank', 'noopener');
+    this.go('done', { cart: [], tried: false, sending: false, copied: false, orderNo, order: { total: this.won(sub + ship), phone: f.phone, depositor, deadline: dl, pay: s.pay, mail } });
+  }
+  detailRef = React.createRef();
+  addrBoxRef = el => { this._addrEl = el; if (el && !el.childElementCount) this.embedPostcode(el); };
+  embedPostcode(el) {
+    el = el || this._addrEl;
+    if (!el || el.childElementCount) return;
+    if (!window.daum || !window.daum.Postcode) { el.innerHTML = '<p style="padding:20px;font-size:14px">주소 검색을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.</p>'; return; }
+    new window.daum.Postcode({ width: '100%', height: '100%',
+      oncomplete: d => {
+        let base = d.userSelectedType === 'J' ? d.jibunAddress : d.roadAddress;
+        const extra = d.userSelectedType === 'R' ? [d.bname, d.apartment === 'Y' ? d.buildingName : ''].filter(Boolean).join(', ') : '';
+        if (extra) base += ' (' + extra + ')';
+        this.setState(s => { const form = { ...s.form, zip: d.zonecode, base }; form.addr = [form.base, form.detail].filter(Boolean).join(' '); return { form, addrOpen: false }; }, () => this.detailRef.current && this.detailRef.current.focus());
+      } }).embed(el);
+  }
+  won = n => n.toLocaleString('ko-KR') + '원';
+  unit(p) { return this.props.launchSale ?? true ? Math.round(p.base * 0.9 / 100) * 100 : p.base; }
+  top() { window.scrollTo(0, 0); }
+  go(page, extra = {}) { this.setState({ page, cartOpen: false, ...extra }, () => this.top()); }
+  scrollTo(id) {
+    const run = () => { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); };
+    if (this.state.page !== 'home') this.setState({ page: 'home' }, () => setTimeout(run, 30)); else run();
+  }
+  add(id, q = 1) {
+    this.setState(s => {
+      const cart = s.cart.some(c => c.id === id) ? s.cart.map(c => c.id === id ? { ...c, qty: c.qty + q } : c) : [...s.cart, { id, qty: q }];
+      return { cart, cartOpen: true };
+    });
+  }
+  setQty(id, d) { this.setState(s => ({ cart: s.cart.map(c => c.id === id ? { ...c, qty: c.qty + d } : c).filter(c => c.qty > 0) })); }
+  renderVals() {
+    const s = this.state, P = this.P, sale = this.props.launchSale ?? true;
+    const priced = p => ({ ...p, price: this.won(this.unit(p)), orig: this.won(p.base), showOrig: sale });
+    const productCards = ['volcano', 'cactus', 'dehum'].map(id => P[id]).map(p => {
+      const hum = s.hover === p.id;
+      return { ...priced(p), img: hum ? p.humid : p.dry, stateLabel: p.cardLabel || (hum ? '습도가 적당할 때' : '건조할 때'),
+        onEnter: () => this.setState({ hover: p.id }), onLeave: () => this.setState({ hover: null }),
+        open: () => this.go('product', { pid: p.id, mode: 'dry', qty: 1 }), add: () => this.add(p.id) };
+    });
+    const howCards = Object.values(P).filter(p => !p.addon).map(p => ({ name: p.name, img: p[s.how], stateLabel: s.how === 'dry' ? p.dryLabel : p.humidLabel, stateCopy: s.how === 'dry' ? p.dryCopy : p.humidCopy }));
+    const cp = P[s.pid];
+    const cur = { ...priced(cp), img: cp.addon ? cp.dry : cp[s.mode], ko: cp.addon ? cp.ko + ' · ' + cp.variant + ' 디자인' : cp.ko };
+    const thumbStyle = on => ({ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 16px 8px 8px', borderRadius: '999px', cursor: 'pointer', fontFamily: 'inherit', color: 'var(--color-text)',
+        background: on ? 'var(--color-accent-100)' : 'var(--color-neutral-200)', border: on ? '2px solid var(--color-accent)' : '2px solid transparent' });
+    const curThumbs = cp.addon ? ['dehum', 'dehumC'].map(id => ({ img: P[id].dry, label: P[id].variant + ' 디자인', pick: () => this.setState({ pid: id, mode: 'dry' }), style: thumbStyle(s.pid === id) })) : ['dry', 'humid'].map(m => ({ img: cp[m], label: m === 'dry' ? cp.dryLabel : cp.humidLabel, pick: () => this.setState({ mode: m }),
+      style: { display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 16px 8px 8px', borderRadius: '999px', cursor: 'pointer', fontFamily: 'inherit', color: 'var(--color-text)',
+        background: s.mode === m ? 'var(--color-accent-100)' : 'var(--color-neutral-200)', border: s.mode === m ? '2px solid var(--color-accent)' : '2px solid transparent' } }));
+    const recId = s.vibe === '강렬한' || (s.space === '거실' && s.vibe !== '차분한') ? 'volcano' : 'cactus';
+    const rp = P[recId];
+    const rec = { ...priced(rp), img: rp.humid, open: () => this.go('product', { pid: recId, mode: 'dry', qty: 1 }) };
+    const recReason = recId === 'volcano' ? `${s.space}에 존재감 있는 오브제가 필요하다면. 붉은 화산과 푸른 백두산, 두 가지 무드등이 공간을 채워요.` : `${s.space}에 조용히 놓기 좋은 크기. 습도가 오르면 꽃이 피어나 작은 정원이 됩니다.`;
+    const chip = (cur, val, key) => ({ label: val, cls: cur === val ? 'btn btn-primary' : 'btn btn-secondary', pick: () => this.setState({ [key]: val }) });
+    const cartLines = s.cart.map(c => { const p = P[c.id]; return { name: (p.variant ? p.name + ' · ' + p.variant : p.name), img: p.dry, qty: c.qty, total: this.won(this.unit(p) * c.qty),
+      inc: () => this.setQty(c.id, 1), dec: () => this.setQty(c.id, -1), remove: () => this.setQty(c.id, -c.qty) }; });
+    const sub = s.cart.reduce((a, c) => a + this.unit(P[c.id]) * c.qty, 0);
+    const ship = sub === 0 || sub >= 70000 ? 0 : 3000;
+    const f = s.form, formOk = f.name && f.phone && f.addr;
+    const cfg = this.cfg(); const o = s.order || {};
+    const setF = k => e => this.setState({ form: { ...s.form, [k]: e.target.value } });
+    const ad = P.dehum, adIn = s.cart.some(c => c.id === 'dehum' || c.id === 'dehumC');
+    const addon = { ...priced(ad), img: ad.dry, add: () => this.add('dehum'), added: adIn, btn: adIn ? '담김' : '함께 담기' };
+    return {
+      addon, showAddon: !adIn && s.cart.length > 0, launchSale: sale, isHome: s.page === 'home', isProduct: s.page === 'product', isCheckout: s.page === 'checkout', isDone: s.page === 'done',
+      goHome: e => { e && e.preventDefault && e.preventDefault(); this.go('home'); },
+      toProducts: e => { e && e.preventDefault(); this.scrollTo('products'); }, toFeatures: e => { e && e.preventDefault(); this.scrollTo('features'); }, toHow: e => { e && e.preventDefault(); this.scrollTo('how'); }, toMood: e => { e && e.preventDefault(); this.scrollTo('mood'); },
+      cartCount: s.cart.reduce((a, c) => a + c.qty, 0), cartOpen: s.cartOpen, openCart: () => this.setState({ cartOpen: true }), closeCart: () => this.setState({ cartOpen: false }),
+      productCards, howCards, howDry: s.how === 'dry', howHumid: s.how === 'humid',
+      setHowDry: () => this.setState({ how: 'dry' }), setHowHumid: () => this.setState({ how: 'humid' }),
+      spaceOpts: ['침실', '거실', '사무실'].map(v => chip(s.space, v, 'space')), vibeOpts: ['차분한', '강렬한'].map(v => chip(s.vibe, v, 'vibe')), rec, recReason,
+      cur, curThumbs, showAddonCard: !cp.addon, qty: s.qty, incQty: () => this.setState({ qty: s.qty + 1 }), decQty: () => this.setState({ qty: Math.max(1, s.qty - 1) }),
+      addCur: () => this.add(s.pid, s.qty), buyNow: () => { this.add(s.pid, s.qty); this.go('checkout'); },
+      cartLines, cartEmpty: s.cart.length === 0, subtotal: this.won(sub), shipping: ship ? this.won(ship) : '무료', total: this.won(sub + ship),
+      shipNote: sub >= 70000 ? '무료배송이 적용됐어요.' : sub === 0 ? '7만원 이상 구매 시 무료배송' : `${this.won(70000 - sub)} 더 담으면 무료배송`,
+      toCheckout: () => this.go('checkout'),
+      form: f, onName: setF('name'), onPhone: setF('phone'), onAddr: setF('addr'),
+      onDetail: e => { const v = e.target.value; this.setState(st => { const form = { ...st.form, detail: v }; form.addr = [form.base, form.detail].filter(Boolean).join(' '); return { form }; }); },
+      addrOpen: s.addrOpen, openAddr: () => this.setState({ addrOpen: true }, () => setTimeout(() => this.embedPostcode(), 50)), closeAddr: () => this.setState({ addrOpen: false }), stop: e => e.stopPropagation(),
+      addrBoxRef: this.addrBoxRef, detailRef: this.detailRef, onMemo: setF('memo'), onDepositor: setF('depositor'), depositorPh: f.name ? f.name + ' (받는 분과 같으면 비워두세요)' : '받는 분과 다르면 입력',
+      payOpts: [['bank', '무통장 입금 (계좌이체)'], ['card', '신용·체크카드']].concat(cfg.toss ? [['toss', '토스 송금']] : []).map(([k, l]) => ({ label: l, checked: s.pay === k, pick: () => this.setState({ pay: k }) })),
+      payIsCard: s.pay === 'card', payNotCard: s.pay !== 'card',
+      cardNote: cfg.card ? '주문하기를 누르면 카드 결제 링크가 열려요. 결제가 확인되면 바로 발송합니다.' : '주문이 접수되면 연락처로 카드 결제 링크를 문자로 보내드려요. 결제가 확인되면 바로 발송합니다.',
+      orderDisabled: s.cart.length === 0 || s.sending, formHint: s.tried && !formOk, sendError: s.sendError,
+      orderBtn: s.sending ? '주문 접수 중…' : this.won(sub + ship) + ' 주문하기', depositHours: cfg.hours,
+      placeOrder: () => { if (!formOk) return this.setState({ tried: true }); this.submitOrder(sub, ship); },
+      orderNo: s.orderNo, orderTotal: o.total, orderPhone: o.phone, orderDepositor: o.depositor, orderDeadline: o.deadline,
+      bankLine: cfg.bank + ' ' + cfg.account, accountHolder: cfg.holder,
+      copyLabel: s.copied ? '복사됨' : '계좌 복사', copyAccount: () => { navigator.clipboard && navigator.clipboard.writeText(cfg.account.replace(/[^0-9]/g, '')); this.setState({ copied: true }); },
+      orderIsCard: o.pay === 'card', orderNotCard: o.pay !== 'card', hasCardLink: !!cfg.card, cardHref: cfg.card,
+      cardDoneCopy: cfg.card ? '아래 버튼을 눌러 카드로 결제해 주세요. 결제가 확인되면 ' + (o.phone || '') + '로 안내드리고 발송합니다.' : (o.phone || '') + '로 카드 결제 링크를 문자로 보내드릴게요. 결제가 확인되면 바로 발송합니다.',
+      showToss: !!cfg.toss && o.pay === 'toss', tossHref: cfg.toss, showMailFallback: !cfg.endpoint && !!cfg.email, mailHref: o.mail || ''
+    };
+  }
+}
+</script>
+</body>
+</html>
